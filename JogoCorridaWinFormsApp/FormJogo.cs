@@ -8,7 +8,7 @@ namespace JogoCorridaWinFormsApp
         Jogo jogo;
         string nivel;
 
-        // Controle de tempo
+        // controle de tempo
         DateTime tempoUltimaMovimentacao;
         DateTime tempoUltimoSegundo;
         DateTime tempoInicioPartida;
@@ -22,7 +22,7 @@ namespace JogoCorridaWinFormsApp
 
         static int recorde = 0; // melhor pontuação enquanto o programa estiver aberto
 
-        // Imagens carregadas UMA vez e já no tamanho certo (deixa o jogo leve)
+        // imagens carregadas
         Image imagemCarro = Redimensionar(Properties.Resources.carro_removebg_preview, 80, 80);
         Image imagemCarro2 = Redimensionar(Properties.Resources.carro2_removebg_preview, 80, 80);
         Image imagemGalinha = Redimensionar(Properties.Resources.galinha, 70, 70);
@@ -36,7 +36,7 @@ namespace JogoCorridaWinFormsApp
 
         public FormJogoCorrida(string Nivel)
         {
-            // Desenho sem piscar
+            // desenho sem piscar
             DoubleBuffered = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
@@ -60,7 +60,7 @@ namespace JogoCorridaWinFormsApp
             jogo.IniciaJogo();
             jogo.Carro.PosicaoX = jogo.PosicionaObjeto(1);
 
-            // Quanto MENOR, mais rápido (milissegundos entre cada movimento)
+            // quanto MENOR, mais rápido
             if (nivel == "Fácil")
                 jogo.Velocidade = 40;
             else if (nivel == "Médio")
@@ -107,7 +107,7 @@ namespace JogoCorridaWinFormsApp
             if (pausado)
                 return;
 
-            // Contagem 3, 2, 1, VAI! antes de começar
+            // contagem 3, 2, 1
             if (contagemInicial)
             {
                 double segundos = (DateTime.Now - tempoInicioPartida).TotalSeconds;
@@ -127,21 +127,21 @@ namespace JogoCorridaWinFormsApp
                 return;
             }
 
-            // Movimento dos obstáculos e da pista
+            // movimento dos obstáculos e da pista
             if ((DateTime.Now - tempoUltimaMovimentacao).TotalMilliseconds >= jogo.Velocidade)
             {
                 tempoUltimaMovimentacao = DateTime.Now;
                 jogo.MovimentaObstaculos();
             }
 
-            // 1a) Pontos por tempo: a cada 1 segundo
+            // pontos por tempo: a cada 1 segundo
             if ((DateTime.Now - tempoUltimoSegundo).TotalMilliseconds >= 1000)
             {
                 tempoUltimoSegundo = DateTime.Now;
                 jogo.ContarSegundo();
             }
 
-            // 1c) Moedas: mostra "+50" onde pegou
+            // mostra "+50" onde pegou
             if (jogo.ChecarMoeda())
             {
                 tempoMoeda = DateTime.Now;
@@ -149,7 +149,7 @@ namespace JogoCorridaWinFormsApp
                 yMoeda = jogo.Carro.PosicaoY - 30;
             }
 
-            // 4) Troca de fase
+            // troca de fase
             if (jogo.VerificarMudancaFase())
             {
                 lblAviso.ForeColor = Color.Orange;
@@ -158,25 +158,23 @@ namespace JogoCorridaWinFormsApp
                 tempoAviso = DateTime.Now;
             }
 
-            // Esconde o aviso depois de 2 segundos
             if (lblAviso.Visible && (DateTime.Now - tempoAviso).TotalMilliseconds >= 2000)
                 lblAviso.Visible = false;
 
             AtualizarPlacar();
-            Invalidate(); // manda redesenhar a tela (chama o Paint)
+            Invalidate(); 
 
             if (jogo.ChecarColisao())
                 GameOver();
         }
 
-        // Tudo do jogo é desenhado aqui: pista, obstáculos e carro
         private void FormJogoCorrida_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
 
             DesenharPista(g);
 
-            // Obstáculos e moedas (centralizados na faixa)
+            // obstaculos e moedas 
             foreach (var ob in jogo.Obstaculos)
             {
                 if (ob.PosicaoY > -100)
@@ -186,7 +184,7 @@ namespace JogoCorridaWinFormsApp
                 }
             }
 
-            // Carro do jogador (ou a explosão)
+            // carro do jogador (ou a explosão)
             int xCarro = jogo.Carro.PosicaoX - 40;
             if (mostrarExplosao)
             {
@@ -200,14 +198,14 @@ namespace JogoCorridaWinFormsApp
                 g.DrawImage(imagemCarro, xCarro, jogo.Carro.PosicaoY, 80, 80);
             }
 
-            // "+50" subindo por meio segundo depois de pegar moeda
+            // "+50"
             double msMoeda = (DateTime.Now - tempoMoeda).TotalMilliseconds;
             if (msMoeda < 600)
                 g.DrawString("+50", fonteMoeda, Brushes.Gold, xMoeda, yMoeda - (int)(msMoeda / 15));
         }
 
-        // Pista original do jogo (a mesma imagem de antes).
-        // Na fase 2 só escurece um pouco para mostrar que mudou de fase.
+        // pista original do jogo 
+        // na fase 2 só escurece
         private void DesenharPista(Graphics g)
         {
             g.DrawImage(imagemPista, 0, 0, ClientSize.Width, ClientSize.Height);
@@ -228,7 +226,7 @@ namespace JogoCorridaWinFormsApp
             lblRecorde.Text = "Recorde: " + recorde;
         }
 
-        // 3) Cada tipo de obstáculo tem uma imagem
+        // cada tipo de obstáculo tem uma imagem
         private Image ImagemDoTipo(TipoDeElemento tipo)
         {
             if (tipo == TipoDeElemento.Galinha)
@@ -268,7 +266,7 @@ namespace JogoCorridaWinFormsApp
                 Close();
         }
 
-        // 2) Efeito visual da batida: explosão piscando + tela vermelha + tela tremendo
+        // efeito visual da batida
         private void EfeitoBatida()
         {
             var posicaoOriginal = this.Location;
@@ -303,7 +301,7 @@ namespace JogoCorridaWinFormsApp
             return new Bitmap(imagem, largura, altura);
         }
 
-        // Desenha uma moeda dourada
+        // moeda dourada
         private static Image CriarImagemMoeda()
         {
             var bmp = new Bitmap(60, 60);
@@ -317,7 +315,7 @@ namespace JogoCorridaWinFormsApp
             return bmp;
         }
 
-        // Desenha uma explosão (círculos vermelho, laranja e amarelo)
+        // explosão
         private static Image CriarImagemExplosao()
         {
             var bmp = new Bitmap(80, 80);

@@ -15,7 +15,7 @@
         public int Faixa2Fim { get; set; }
         public int Ymaximo { get; set; } = 50;
 
-        // NOVO: informações do placar
+        //informações do placar
         public int Fase { get; set; } = 1;
         public int MoedasColetadas { get; set; }
         public int ObstaculosSuperados { get; set; }
@@ -61,7 +61,7 @@
             return obstaculos;
         }
 
-        // NOVO: sorteia o tipo do elemento. A bomba só aparece na fase 2.
+        // a bomba so aparece na fase 2
         public TipoDeElemento SorteiaTipo()
         {
             int numero = rnd.Next(1, 101); // 1 a 100
@@ -71,9 +71,9 @@
             else if (numero <= 55)
                 return TipoDeElemento.Obstaculo;  // 30%
             else if (numero <= 80 || Fase == 1)
-                return TipoDeElemento.Galinha;    // 25% (fase 1: o resto também)
+                return TipoDeElemento.Galinha;    // 25% fase 1 o resto tambem
             else
-                return TipoDeElemento.Bomba;      // 20% (só na fase 2)
+                return TipoDeElemento.Bomba;      // 20% so na fase 2
         }
 
         public int PosicionaObjeto(int faixa)
@@ -102,14 +102,14 @@
             }
         }
 
-        // Verifica se o carro está encostando no elemento
+        // verifica se o carro esta encostando no elemento
         private bool EstaEncostando(Elemento ob)
         {
             return ChecarFaixaElemento(Carro) == ChecarFaixaElemento(ob) &&
                    Math.Abs(Carro.PosicaoY - ob.PosicaoY) < 60;
         }
 
-        // Batida só conta para obstáculos (moeda não é batida)
+        // Batida só conta para obstáculos moeda não é batida
         public bool ChecarColisao()
         {
             foreach (var ob in Obstaculos)
@@ -120,7 +120,7 @@
             return false;
         }
 
-        // NOVO: pega a moeda, soma pontos e manda a moeda de volta para cima
+        // pega a moeda, soma pontos e manda a moeda de volta para cima
         public bool ChecarMoeda()
         {
             foreach (var ob in Obstaculos)
@@ -136,14 +136,14 @@
             return false;
         }
 
-        // NOVO: pontos por tempo (chamar 1 vez por segundo)
+        // pontos por tempo chamar 1 vez por segundo
         public void ContarSegundo()
         {
             Tempo++;
             Pontuacao += Fase; // fase 1 = +1 por segundo, fase 2 = +2
         }
 
-        // NOVO: troca de fase. Retorna true só no momento em que muda.
+        // troca de fase retorna true só no momento em que muda
         public bool VerificarMudancaFase()
         {
             if (Fase == 1 && Pontuacao >= PontosParaFase2)
@@ -170,7 +170,7 @@
 
                 if (ob.PosicaoY > Ymaximo)
                 {
-                    // Pontos por obstáculo superado (moeda perdida não conta)
+                    // Pontos por obstáculo superado moeda perdida não conta
                     if (ob.Tipo == TipoDeElemento.Bomba)
                     {
                         Pontuacao += 20;
